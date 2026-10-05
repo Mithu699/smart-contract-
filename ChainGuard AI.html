@@ -1,0 +1,256 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ChainGuard AI</title>
+<style>
+:root{--bg:#f6f8fa;--s:#fff;--b:#d0d7de;--t:#1f2328;--m:#59636e;--a:#0f9d7a;--Critical:#d1242f;--High:#d9650b;--Medium:#b08800;--Low:#0969da;--Info:#6e7781;--code:#f0f3f6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f14;--s:#121821;--b:#223040;--t:#e6edf3;--m:#8b9bb0;--a:#2dd4a7;--Critical:#ef4444;--High:#f97316;--Medium:#eab308;--Low:#38bdf8;--Info:#8b9bb0;--code:#0a0e13}}
+:root[data-theme="dark"]{--bg:#0b0f14;--s:#121821;--b:#223040;--t:#e6edf3;--m:#8b9bb0;--a:#2dd4a7;--Critical:#ef4444;--High:#f97316;--Medium:#eab308;--Low:#38bdf8;--Info:#8b9bb0;--code:#0a0e13}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background-image:linear-gradient(var(--b) 1px,transparent 1px),linear-gradient(90deg,var(--b) 1px,transparent 1px);background-size:44px 44px;background-attachment:fixed}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}.logo span{color:var(--a)}
+nav{display:flex;gap:6px}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--b);background:var(--s);color:var(--t);border-radius:6px;padding:6px 12px}
+button:hover{border-color:var(--a)}button.pri{background:var(--a);color:#04140f;border-color:var(--a);font-weight:600}button.on{border-color:var(--a);color:var(--a)}
+.hero{padding:34px 0 20px}.hero h1{font-size:clamp(26px,5vw,42px);margin:0 0 8px;line-height:1.15}.hero p{color:var(--m);margin:0 0 16px;font-size:16px}
+.card{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:14px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:170px 1fr 230px;gap:14px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--m)}
+.ed{display:flex;border:1px solid var(--b);border-radius:8px;background:var(--code);height:380px;overflow:hidden}
+#gut,#src{font:12.5px/20px ui-monospace,Menlo,Consolas,monospace;padding:8px 0;margin:0}
+#gut{width:42px;text-align:right;color:var(--m);padding-right:8px;overflow:hidden;white-space:pre;user-select:none;border-right:1px solid var(--b)}
+#src{flex:1;border:0;background:transparent;color:var(--t);resize:none;outline:0;padding-left:10px;white-space:pre;overflow:auto}
+.file{padding:6px 8px;border-radius:6px;font:12.5px ui-monospace,monospace;cursor:pointer}.file.on{background:var(--code);color:var(--a)}
+label{display:block;font-size:13px;padding:2px 0;color:var(--t)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;font-weight:700;color:#fff}
+.stage{font:12.5px ui-monospace,monospace;color:var(--m)}.stage b{color:var(--a)}
+pre.c{background:var(--code);border:1px solid var(--b);border-radius:6px;padding:8px 10px;overflow-x:auto;margin:6px 0;font:12.5px ui-monospace,monospace}
+.del{border-left:3px solid var(--Critical)}.add{border-left:3px solid var(--a)}
+.f{border:1px solid var(--b);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--s)}.f.ign{opacity:.45}.f.res{border-color:var(--a)}
+.sum{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}@media(max-width:600px){.sum{grid-template-columns:1fr}}
+.bar{height:8px;border-radius:4px;background:var(--a);margin:2px 0 6px}
+.tabs{display:flex;gap:6px;margin:6px 0 12px}.hide{display:none}
+.warn{font-size:12px;color:var(--m);border-top:1px solid var(--b);padding-top:8px;margin-top:10px}
+.err{color:var(--Critical)}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:6px;border-bottom:1px solid var(--b);font-size:13px}tr.h{cursor:pointer}tr.h:hover{background:var(--code)}
+@media print{body{background:#fff;color:#000}header,.tabs,#scanner,#hist,button{display:none!important}}
+</style></head><body><div class="wrap">
+<header><div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><circle cx="12" cy="10" r="2"/><circle cx="8.5" cy="14" r="1.2"/><circle cx="15.5" cy="14" r="1.2"/><path d="M12 12l-3 2m3-2l3 2"/></svg>ChainGuard <span>AI</span></div>
+<nav><button id="tS" class="on">Scanner</button><button id="tR">Report</button><button id="tH">History</button><button id="th">◐ Theme</button></nav></header>
+<div class="hero"><h1>Secure Your Smart Contracts Before They Ship.</h1><p>Static security analysis for Solana / Anchor (Rust) programs. Runs entirely in your browser; your code is never executed or uploaded.</p>
+<button class="pri" id="demo">Try Demo: load VulnerableVault</button></div>
+
+<section id="scanner"><div class="grid">
+<div class="card"><h3>Files</h3><div class="file on" id="fn">lib.rs</div><div class="file" id="fd">demo: VulnerableVault</div><div class="file" id="fs">demo: SafeVault</div><div style="margin-top:10px"><input type="file" id="up" accept=".rs" style="max-width:100%;font-size:12px"></div></div>
+<div><div class="ed"><pre id="gut">1</pre><textarea id="src" spellcheck="false" placeholder="Paste Rust / Anchor source here…"></textarea></div></div>
+<div class="card"><h3>Configuration</h3><div class="stage" style="margin-bottom:8px">Solana · Rust · Anchor</div><div id="cats"></div>
+<button class="pri" id="run" style="width:100%;margin-top:10px">Run Security Scan</button><div class="stage" style="margin-top:6px">Ctrl/Cmd + Enter</div></div>
+</div>
+<div class="card"><h3>Scan status</h3><div id="stat" class="stage">Idle. Load the demo or paste a contract.</div></div></section>
+
+<section id="res"></section>
+<section id="hist" class="hide card"><h3>Scan history (this session)</h3><div id="hl">No scans yet.</div></section>
+<section id="rep" class="hide card"></section>
+<div class="warn" style="text-align:center">Automated analysis cannot guarantee the absence of vulnerabilities. Critical contracts should undergo professional security auditing.</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CATS=['Access control','Account validation','PDA security','Signer validation','Arithmetic safety','CPI security','Ownership validation','Reentrancy-like logic','Unsafe account handling','Initialization','Token authority','Logic'];
+const DEMO=`use anchor_lang::prelude::*;
+use anchor_spl::token::{self, Token, TokenAccount};
+use solana_program::{program::invoke, system_instruction};
+
+declare_id!("Vau1t111111111111111111111111111111111111111");
+
+#[program]
+pub mod vulnerable_vault {
+    use super::*;
+
+    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        let vault = &mut ctx.accounts.vault;
+        vault.authority = ctx.accounts.authority.key();
+        vault.balance = 0;
+        Ok(())
+    }
+
+    pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
+        ctx.accounts.vault.balance += amount;
+        Ok(())
+    }
+
+    pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
+        invoke(
+            &system_instruction::transfer(ctx.accounts.vault.key, ctx.accounts.recipient.key, amount),
+            &[ctx.accounts.vault.to_account_info(), ctx.accounts.recipient.to_account_info()],
+        )?;
+        ctx.accounts.vault.balance -= amount;
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct Initialize<'info> {
+    #[account(init_if_needed, payer = authority, space = 8 + 40)]
+    pub vault: Account<'info, Vault>,
+    pub authority: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct Deposit<'info> {
+    #[account(mut)]
+    pub vault: Account<'info, Vault>,
+    #[account(seeds = [b"config"])]
+    pub config: Account<'info, Config>,
+    pub depositor: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct Withdraw<'info> {
+    #[account(mut)]
+    pub vault: Account<'info, Vault>,
+    pub authority: AccountInfo<'info>,
+    pub recipient: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
+}
+
+#[account]
+pub struct Vault { pub authority: Pubkey, pub balance: u64 }
+#[account]
+pub struct Config { pub fee: u64 }
+`;
+const SAFE=`use anchor_lang::prelude::*;
+
+#[program]
+pub mod safe_vault {
+    use super::*;
+    pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
+        let v = &mut ctx.accounts.vault;
+        v.balance = v.balance.checked_add(amount).ok_or(ErrorCode::Overflow)?;
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct Deposit<'info> {
+    #[account(mut, has_one = authority)]
+    pub vault: Account<'info, Vault>,
+    #[account(seeds = [b"config"], bump)]
+    pub config: Account<'info, Config>,
+    pub authority: Signer<'info>,
+}
+`;
+/* ---------- STATIC ANALYZER ---------- */
+// Step 1: find every #[derive(Accounts)] struct and collect its fields + #[account(...)] attributes.
+function parseStructs(L){const out=[];let cur=null,pend=false,acc=null,a='',cmt=[];
+ for(let i=0;i<L.length;i++){const t=L[i].trim();
+  if(/#\[derive\([^)]*Accounts[^)]*\)\]/.test(t)){pend=true;continue}
+  if(pend){const m=t.match(/struct\s+(\w+)/);if(m){cur={name:m[1],fields:[]};out.push(cur);pend=false;a='';acc=null;cmt=[]}continue}
+  if(!cur)continue; if(t==='}'){cur=null;continue}
+  if(t.startsWith('//')){cmt.push(t);continue}
+  if(t.startsWith('#[account')||acc!==null){acc=(acc||'')+' '+t;if(/\)\]\s*$|#\[account\]/.test(t)){a=acc;acc=null}continue}
+  const m=t.match(/^pub\s+(\w+)\s*:\s*(.+?),?$/);
+  if(m){cur.fields.push({name:m[1],full:m[2],type:m[2].split(/[<\s]/)[0],a,cmt:cmt.join(' '),line:i+1});a='';cmt=[]}}
+ return out}
+const SIGNERISH=/^(authority|admin|owner|signer|payer|user|creator|depositor|withdrawer|governance)$/;
+const LOOSE=/^(AccountInfo|UncheckedAccount)$/;
+function analyze(src,enabled){const L=src.split('\n'),F=[];
+ const add=(title,sev,conf,cat,line,desc,fix,fixed)=>F.push({id:'CG-'+String(F.length+1).padStart(3,'0'),title,sev,conf,cat,line,desc,fix,fixed,vuln:(L[line-1]||'').trim(),state:'open'});
+ const S=parseStructs(L);
+ for(const s of S){const hasAuth=s.fields.some(f=>SIGNERISH.test(f.name));
+  for(const f of s.fields){const code=L[f.line-1].trim();
+   // SIGNER: authority-like account typed as a plain AccountInfo is never checked for a signature.
+   if(SIGNERISH.test(f.name)&&LOOSE.test(f.type)&&!/\bsigner\b/.test(f.a))
+    add('Missing signer validation','Critical',96,'Signer validation',f.line,`\`${f.name}\` looks like an authority but is a plain ${f.type}. Anyone can pass someone else's address here without their signature, so they can act on that person's behalf.`,'Use the Signer type so Anchor rejects the transaction unless this account signed.',`pub ${f.name}: Signer<'info>,`);
+   // OWNERSHIP: raw accounts are not checked for owner/type. Anchor's Account<T> does it automatically.
+   else if(LOOSE.test(f.type)&&!SIGNERISH.test(f.name)&&!/program/.test(f.name)&&!/CHECK/.test(f.cmt))
+    add('Missing account ownership validation','High',78,'Ownership validation',f.line,`\`${f.name}\` is an unchecked ${f.type}. Nothing verifies which program owns it or what data it holds, so an attacker could substitute a fake account.`,'Use a typed Account<\'info, T> (checks owner + discriminator), or add a constraint and a /// CHECK: comment explaining why it is safe.',`/// CHECK: validated by address constraint\n#[account(address = EXPECTED_KEY)]\npub ${f.name}: UncheckedAccount<'info>,`);
+   // CPI: a program account that is not typed Program<> can point to an attacker's program.
+   if(/program/.test(f.name)&&LOOSE.test(f.type))
+    add('Arbitrary CPI target (unchecked program account)','High',90,'CPI security',f.line,`\`${f.name}\` is an unchecked ${f.type}. If you call it via CPI, an attacker can supply a malicious program that pretends to be the real one.`,'Type it as Program<\'info, T> so Anchor verifies the program ID.',`pub ${f.name}: Program<'info, ${/token/.test(f.name)?'Token':'System'}>,`);
+   // PDA: seeds without bump means the canonical bump is never verified.
+   if(/seeds\s*=/.test(f.a)&&!/\bbump\b/.test(f.a))
+    add('PDA validation missing bump','High',88,'PDA security',f.line,`\`${f.name}\` has seeds but no bump constraint, so the canonical PDA address is not fully verified.`,'Add `bump` (or `bump = account.bump`) next to seeds.',`#[account(seeds = [...], bump)]\npub ${f.name}: ${f.full},`);
+   // INIT
+   if(/init_if_needed/.test(f.a))
+    add('Unsafe init_if_needed (re-initialization risk)','High',85,'Initialization',f.line,'init_if_needed lets an attacker re-run initialization on an existing account, potentially resetting authority or state.','Use `init` for one-time setup, or manually guard against re-initialization.',code.replace(/init_if_needed/,'init'));
+   else if(/\binit\b/.test(f.a)&&!/payer/.test(f.a))
+    add('Initialization without payer','Medium',70,'Initialization',f.line,'An init constraint needs a payer to fund the new account.','Add `payer = <signer>` and `space = ...`.',`#[account(init, payer = authority, space = 8 + SIZE)]`);
+   // TOKEN: token accounts should bind to a mint and authority.
+   if(/TokenAccount/.test(f.full)&&!/token::|associated_token|constraint|has_one/.test(f.a))
+    add('Token account missing mint/authority constraint','Medium',65,'Token authority',f.line,`\`${f.name}\` is a token account with no mint or authority constraint, so an attacker may pass a token account for a different mint or owner.`,'Add token::mint and token::authority constraints.',`#[account(mut, token::mint = mint, token::authority = authority)]\npub ${f.name}: ${f.full},`);
+   // ACCESS CONTROL: mutable state account not tied to the authority.
+   if(hasAuth&&/Account</.test(f.full)&&/\bmut\b/.test(f.a)&&!/has_one|constraint|seeds|\binit/.test(f.a)&&!/TokenAccount/.test(f.full))
+    add('Missing authority constraint on mutable account','High',80,'Access control',f.line,`\`${f.name}\` is mutable and this instruction has an authority, but nothing proves the authority owns \`${f.name}\`. Any signer could modify someone else's account.`,'Add `has_one = authority` so the stored authority must match.',`#[account(mut, has_one = authority)]\npub ${f.name}: ${f.full},`)}}
+ // PDA bump supplied by caller
+ L.forEach((l,i)=>{const t=l.trim();if(t.startsWith('//'))return;
+  if(/pub fn .*\bbump\s*:\s*u8/.test(t))add('User-supplied PDA bump','Medium',75,'PDA security',i+1,'Letting callers pass the bump allows non-canonical PDAs.','Store and use the canonical bump.',t.replace(/,?\s*bump\s*:\s*u8/,''));
+  if(/find_program_address|create_program_address/.test(t))add('Manual PDA derivation','Info',50,'PDA security',i+1,'Manual derivation is easy to get wrong.','Prefer Anchor seeds + bump constraints.',t);
+  if(/set_authority|SetAuthority|freeze_account|FreezeAccount|mint_to\(|MintTo/.test(t))add('Sensitive token authority operation','Medium',60,'Token authority',i+1,'Mint/freeze/authority changes are privileged. Confirm the caller is a verified signer tied to the mint authority.','Require a Signer constrained with has_one / token::authority.',`// require mint authority: #[account(mut, has_one = mint_authority)]`);
+  if(/lamports\(\)\.borrow_mut|\*\*.*lamports/.test(t))add('Direct lamport manipulation','High',82,'Unsafe account handling',i+1,'Editing lamports directly bypasses runtime checks and can break rent or ownership rules.','Use system_program::transfer via CPI, or verify ownership first.',t);
+  // ARITHMETIC: raw +,-,* on money-like variables can overflow/underflow.
+  const am=t.match(/^(.+?)\s*(\+|-|\*)=\s*(.+?);/);
+  if(!/^(\/\/|use |pub fn|#|msg!|require)/.test(t)&&/amount|balance|lamports|total|supply|fee|price|shares/i.test(t)&&!/checked_|saturating_|->/.test(t)&&(am||/=\s*[\w.()]+\s[+*-]\s[\w.()]+;/.test(t))){
+   const op={'+':'checked_add','-':'checked_sub','*':'checked_mul'};
+   add('Unchecked arithmetic','Medium',72,'Arithmetic safety',i+1,'Raw arithmetic can silently wrap in release builds (overflow/underflow), corrupting balances.','Use checked_* math and return an error on failure.',am?`${am[1]} = ${am[1]}.${op[am[2]]}(${am[3]}).ok_or(ErrorCode::Overflow)?;`:'// use checked_add / checked_sub / checked_mul')}});
+ // REENTRANCY-LIKE: state written after an external call (effects should come before interactions).
+ let call=-1;L.forEach((l,i)=>{const t=l.trim();if(/pub fn /.test(t))call=-1;
+  else if(/\binvoke(_signed)?\(|::transfer\(/.test(t)&&!/^\/\//.test(t))call=i;
+  else if(call>=0&&/(balance|amount|total)\s*(=|-=|\+=)/.test(t)&&!/^\/\//.test(t)&&!F.some(f=>f.cat==='Reentrancy-like logic')){
+   add('State updated after external call','Medium',60,'Reentrancy-like logic',i+1,`State is written on line ${i+1} after a CPI/transfer on line ${call+1}. Update state first, then interact, to avoid inconsistent state if the call re-enters or partly fails.`,'Follow checks → effects → interactions.','// move the balance update above the CPI call')}});
+ if(/\binvoke(_signed)?\(/.test(src)&&!/Program</.test(src)){const i=L.findIndex(l=>/\binvoke/.test(l));add('Raw invoke without program ID check','High',70,'CPI security',i+1,'A raw invoke() is used and no Program<> type verifies the target.','Verify the program ID or use Anchor CPI helpers.','// use CpiContext::new(ctx.accounts.token_program.to_account_info(), ...)')}
+ return F.filter(f=>enabled.includes(f.cat))}
+const PEN={Critical:22,High:12,Medium:6,Low:2,Info:0};
+function score(F){return Math.max(0,Math.round(100-F.filter(f=>f.state!=='ign').reduce((a,f)=>a+PEN[f.sev]*f.conf/100,0)))}
+const band=s=>s>=95?'Excellent':s>=80?'Good':s>=60?'Needs Attention':s>=40?'High Risk':'Critical Risk';
+/* ---------- UI ---------- */
+let cur=null,hist=[];const src=$('#src');
+$('#cats').innerHTML=CATS.map((c,i)=>`<label><input type="checkbox" checked data-c="${esc(c)}"> ${esc(c)}</label>`).join('');
+function gut(){const n=src.value.split('\n').length;$('#gut').textContent=Array.from({length:n},(_,i)=>i+1).join('\n')}
+src.oninput=gut;src.onscroll=()=>$('#gut').scrollTop=src.scrollTop;
+function load(t,name,id){src.value=t;gut();$('#fn').textContent=name;document.querySelectorAll('.file').forEach(e=>e.classList.remove('on'));$(id).classList.add('on')}
+$('#fd').onclick=()=>load(DEMO,'VulnerableVault.rs','#fd');$('#fs').onclick=()=>load(SAFE,'SafeVault.rs','#fs');$('#fn').onclick=()=>{};
+$('#demo').onclick=()=>{load(DEMO,'VulnerableVault.rs','#fd');show('S');$('#scanner').scrollIntoView();run()};
+$('#up').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>500000){$('#stat').innerHTML='<span class="err">File too large (max 500 KB).</span>';return}f.text().then(t=>load(t,f.name,'#fn'))};
+function show(w){$('#scanner').classList.toggle('hide',w!=='S');$('#res').classList.toggle('hide',w!=='S');$('#hist').classList.toggle('hide',w!=='H');$('#rep').classList.toggle('hide',w!=='R');
+ ['S','R','H'].forEach(k=>$('#t'+k).classList.toggle('on',k===w));if(w==='R')report();if(w==='H')histView()}
+$('#tS').onclick=()=>show('S');$('#tR').onclick=()=>show('R');$('#tH').onclick=()=>show('H');
+$('#th').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()==='#0b0f14';r.dataset.theme=d?'light':'dark';try{localStorage.setItem('cgTheme',r.dataset.theme)}catch(e){}};
+try{document.documentElement.dataset.theme=localStorage.getItem('cgTheme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}
+const STAGES=['Initializing analyzer','Parsing Rust source','Analyzing Anchor instructions','Checking account constraints','Checking signer validation','Checking PDA security','Analyzing CPI calls','AI review: skipped (no AI provider configured; local rules only)','Generating security report'];
+async function run(){const t=src.value;
+ if(!t.trim()){$('#stat').innerHTML='<span class="err">Empty contract. Paste Rust/Anchor code first.</span>';return}
+ if(!/\bfn\s+\w+|struct\s+\w+/.test(t)){$('#stat').innerHTML='<span class="err">This does not look like Rust. Only Rust/Anchor is supported right now.</span>';return}
+ if(t.length>300000){$('#stat').innerHTML='<span class="err">Source too large (300 KB max).</span>';return}
+ const en=[...document.querySelectorAll('#cats input:checked')].map(e=>e.dataset.c);
+ for(const s of STAGES){$('#stat').innerHTML=`<b>▸</b> ${esc(s)}…`;await new Promise(r=>setTimeout(r,70))}
+ const open=(t.match(/{/g)||[]).length!==(t.match(/}/g)||[]).length;
+ const F=analyze(t,en);cur={name:$('#fn').textContent,src:t,F,date:new Date().toLocaleString(),id:'SCAN-'+Date.now().toString(36).toUpperCase()};hist.unshift(cur);
+ $('#stat').innerHTML=`<b>✓ Scan complete</b>: ${F.length} finding(s)`+(open?' <span class="err">· warning: unbalanced braces, results may be incomplete</span>':'')+(F.some(f=>f.sev==='Critical')?' <span class="err">· CRITICAL issue found</span>':'');render()}
+$('#run').onclick=run;
+addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();run()}});
+const pill=s=>`<span class="pill" style="background:var(--${s})">${s.toUpperCase()}</span>`;
+function summary(F){const act=F.filter(f=>f.state!=='ign'),sc=score(F),C=['Critical','High','Medium','Low','Info'],cnt=k=>act.filter(f=>f.sev===k).length;
+ const cat={};act.forEach(f=>cat[f.cat]=(cat[f.cat]||0)+1);const mx=Math.max(1,...Object.values(cat)),col=sc>=80?'var(--a)':sc>=60?'var(--Medium)':'var(--Critical)';
+ return {sc,html:`<div class="sum"><div style="text-align:center"><svg width="130" height="130" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--b)" stroke-width="9"/><circle cx="60" cy="60" r="52" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${3.267*sc} 400" transform="rotate(-90 60 60)"/><text x="60" y="62" text-anchor="middle" font-size="28" font-weight="700" fill="var(--t)">${sc}</text><text x="60" y="80" text-anchor="middle" font-size="10" fill="var(--m)">/ 100</text></svg><div><b>${band(sc)}</b></div></div>
+ <div><div class="row">${C.map(k=>`<div>${pill(k)} <b>${cnt(k)}</b></div>`).join('')}</div><h3 style="margin-top:12px">By category</h3>${Object.entries(cat).map(([k,v])=>`<div style="font-size:12px">${esc(k)} (${v})</div><div class="bar" style="width:${v/mx*100}%"></div>`).join('')||'<div class="stage">No issues in enabled categories.</div>'}</div></div>`}}
+function render(){const F=cur.F,S=summary(F);
+ $('#res').innerHTML=`<div class="card"><h3>Results · ${esc(cur.name)}</h3>${S.html}<div class="row" style="margin-top:10px"><button class="pri" id="mk">Generate Security Report</button></div></div>`+(F.length?F.map((f,i)=>fHTML(f,i)).join(''):'<div class="card">No findings from the enabled rules. That is not proof the code is secure.</div>');
+ $('#mk').onclick=()=>show('R');
+ document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act(b.dataset.a,+b.dataset.i))}
+function fHTML(f,i){return `<div class="f ${f.state==='ign'?'ign':f.state==='res'?'res':''}" id="f${i}"><div class="row">${pill(f.sev)}<b>${esc(f.title)}</b><span class="stage">${esc(f.id)} · ${esc(f.cat)} · confidence ${f.conf}% · line ${f.line}${f.state!=='open'?' · '+(f.state==='ign'?'ignored':'resolved'):''}</span></div>
+ <p>${esc(f.desc)}</p><div class="stage">Vulnerable code</div><pre class="c">${esc(f.vuln)}</pre><div class="row"><button data-a="fix" data-i="${i}">Show Fix</button><button data-a="go" data-i="${i}">View Code</button><button data-a="why" data-i="${i}">Explain</button><button data-a="ign" data-i="${i}">Ignore</button><button data-a="res" data-i="${i}">Mark Resolved</button></div><div id="x${i}"></div></div>`}
+function act(a,i){const f=cur.F[i],x=$('#x'+i);
+ if(a==='fix')x.innerHTML=`<div class="stage" style="margin-top:8px">BEFORE → AFTER</div><pre class="c del">- ${esc(f.vuln)}</pre><pre class="c add">${esc(f.fixed).split('\n').map(l=>'+ '+l).join('\n')}</pre><p class="stage">${esc(f.fix)}</p>`;
+ if(a==='why')x.innerHTML=`<p class="stage" style="margin-top:8px">Beginner explanation: on Solana, a program receives whatever accounts the caller chooses. It must verify them itself (who signed, who owns them, whether addresses match). "${esc(f.title)}" means one of those checks is missing, so an attacker may supply data you did not expect. ${esc(f.fix)}</p>`;
+ if(a==='go'){const L=src.value.split('\n');let o=0;for(let k=0;k<f.line-1;k++)o+=L[k].length+1;load(cur.src,cur.name,'#fn');src.focus();src.setSelectionRange(o,o+(L[f.line-1]||'').length);src.scrollTop=Math.max(0,(f.line-4)*20);$('#scanner').scrollIntoView()}
+ if(a==='ign'||a==='res'){f.state=f.state===a?'open':a;render()}}
+function report(){const el=$('#rep');if(!cur){el.innerHTML='<p>Run a scan first, then come back here.</p>';return}
+ const S=summary(cur.F);el.innerHTML=`<h2 style="margin:0">ChainGuard <span style="color:var(--a)">AI</span> · Smart Contract Security Report</h2><p class="stage">Contract: ${esc(cur.name)} · Scan ID: ${esc(cur.id)} · ${esc(cur.date)} · Analysis: local static rules (no AI review)</p>
+ <h3>Executive summary</h3><p>Security score <b>${S.sc}/100 (${band(S.sc)})</b> with ${cur.F.filter(f=>f.state!=='ign').length} open finding(s).</p>${S.html}<h3 style="margin-top:14px">Detailed findings</h3>
+ ${['Critical','High','Medium','Low','Info'].map(k=>cur.F.filter(f=>f.sev===k&&f.state!=='ign').map(f=>`<div class="f">${pill(k)} <b>${esc(f.title)}</b> <span class="stage">line ${f.line} · ${f.conf}%</span><p>${esc(f.desc)}</p><pre class="c del">- ${esc(f.vuln)}</pre><pre class="c add">${esc(f.fixed).split('\n').map(l=>'+ '+l).join('\n')}</pre><p><b>Recommendation:</b> ${esc(f.fix)}</p></div>`).join('')).join('')}
+ <h3>Disclaimer</h3><p class="stage">Automated analysis cannot guarantee the absence of vulnerabilities. Critical contracts should undergo professional security auditing. Generated by ChainGuard AI.</p><button class="pri" onclick="window.print()">Print / Save as PDF</button>`}
+function histView(){$('#hl').innerHTML=hist.length?`<table><tr><th>Contract</th><th>Score</th><th>Issues</th><th>Date</th></tr>${hist.map((h,i)=>`<tr class="h" data-h="${i}"><td>${esc(h.name)}</td><td>${score(h.F)}</td><td>${h.F.length}</td><td>${esc(h.date)}</td></tr>`).join('')}</table>`:'No scans yet.';
+ document.querySelectorAll('[data-h]').forEach(r=>r.onclick=()=>{cur=hist[+r.dataset.h];load(cur.src,cur.name,'#fn');show('S');render()})}
+gut();
+</script></body></html>
